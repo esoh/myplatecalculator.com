@@ -39,6 +39,9 @@ function App() {
         placeholder="225"
         autoFocus
         onChange={e => setNum(e.target.value)}
+        onFocus={event => {
+          event.target.select();
+        }}
       />
       <TableContainer component={Paper}>
         <Table aria-label="simple table">
