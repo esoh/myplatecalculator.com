@@ -79,7 +79,7 @@ async function main() {
       CallerReference: Date.now().toString(), /* required */
       Paths: { /* required */
         Quantity: 1, /* required */
-        Items: ['/index.html']
+        Items: ['/*']
       }
     }
   };
