@@ -1,25 +1,26 @@
 import React, { useState } from 'react';
 import './App.css';
-import Input from '@material-ui/core/Input';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import Radio from '@material-ui/core/Radio';
-import Button from '@material-ui/core/Button';
-import Box from '@material-ui/core/Box';
-import IconButton from '@material-ui/core/IconButton';
-import SettingsIcon from '@material-ui/icons/Settings';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import { makeStyles } from '@material-ui/core/styles';
+import Input from '@mui/material/Input';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import RadioGroup from '@mui/material/RadioGroup';
+import Radio from '@mui/material/Radio';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import SettingsIcon from '@mui/icons-material/Settings';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import { ThemeProvider, createMuiTheme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 import {
   roundToNearest,
   toPlates,
@@ -40,9 +41,17 @@ const useStyles = makeStyles(theme => ({
   table: {
     marginBottom: theme.spacing(4),
   },
+  settingsIcon: {
+    position: 'absolute',
+    right: 8,
+  },
+  input: {
+    marginRight: theme.spacing(2),
+    maxWidth: 100,
+  },
 }));
 
-function App() {
+function Main() {
   const [num, setNum] = useState('');
   const [unit, setUnit] = useState(UNIT.LB);
   const [jumpConfigKey, setJumpConfigKey] = useState(localStorage.getItem(LOCAL_STORAGE.CONFIG) || JUMP_CONFIG.MATT_GARY.key);
@@ -50,7 +59,7 @@ function App() {
     setJumpConfigKey(e.target.value);
     localStorage.setItem(LOCAL_STORAGE.CONFIG, e.target.value);
   }
-  const styles = useStyles();
+  const classes = useStyles();
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const onClose = () => setIsSettingsOpen(false);
@@ -76,6 +85,7 @@ function App() {
           onFocus={event => {
             event.target.select();
           }}
+          className={classes.input}
         />
         <RadioGroup row value={unit} onChange={handleChangeUnit}>
           <FormControlLabel value={UNIT.LB} control={<Radio />} label="LB" />
@@ -84,18 +94,14 @@ function App() {
 
         <IconButton
           aria-label="close"
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-          }}
+          className={classes.settingsIcon}
           onClick={() => setIsSettingsOpen(true)}
         >
           <SettingsIcon />
         </IconButton>
       </Box>
 
-      <TableContainer component={Paper} className={styles.table}>
+      <TableContainer component={Paper} className={classes.table}>
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -107,7 +113,7 @@ function App() {
           </TableHead>
           <TableBody>
             {jumpConfig.values.map((percent, i) => (
-              <TableRow key={percent} className={styles.tableRow}>
+              <TableRow key={percent} className={classes.tableRow}>
                 <TableCell component="th" scope="row">
                   {`${percent * 100}%`}
                 </TableCell>
@@ -143,5 +149,12 @@ function App() {
     </div>
   );
 }
+
+const theme = createMuiTheme();
+const App = () => (
+  <ThemeProvider theme={theme}>
+    <Main />
+  </ThemeProvider>
+);
 
 export default App;
