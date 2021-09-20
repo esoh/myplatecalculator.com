@@ -63,6 +63,7 @@ function App() {
         <Input
           placeholder="225"
           autoFocus
+          type="number"
           value={num}
           onChange={e => setNum(e.target.value)}
           onFocus={event => {
