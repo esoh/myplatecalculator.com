@@ -37,6 +37,9 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: theme.palette.action.hover,
     },
   },
+  table: {
+    marginBottom: theme.spacing(4),
+  },
 }));
 
 function App() {
@@ -92,7 +95,7 @@ function App() {
         </IconButton>
       </Box>
 
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} className={styles.table}>
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
