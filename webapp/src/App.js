@@ -12,16 +12,23 @@ import Typography from '@material-ui/core/Typography';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Radio from '@material-ui/core/Radio';
+import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
+import IconButton from '@material-ui/core/IconButton';
+import SettingsIcon from '@material-ui/icons/Settings';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   roundToNearest,
   toPlates,
   convertValue,
 } from './utils';
-import { UNIT } from './constants';
-
-const percentages = [0.475, 0.60, 0.725, 0.825, 0.9, 0.96, 1];
+import {
+  UNIT,
+  JUMP_CONFIG,
+} from './constants';
 
 const useStyles = makeStyles(theme => ({
   tableRow: {
@@ -34,7 +41,12 @@ const useStyles = makeStyles(theme => ({
 function App() {
   const [num, setNum] = useState('');
   const [unit, setUnit] = useState(UNIT.LB);
+  const [jumpConfigKey, setJumpConfigKey] = useState(JUMP_CONFIG.MATT_GARY.key);
+  const handleChangeJumpConfig = e => setJumpConfigKey(e.target.value);
   const styles = useStyles();
+
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const onClose = () => setIsSettingsOpen(false);
 
   const handleChangeUnit = e => setUnit(oldUnit => {
     const newUnit = e.target.value;
@@ -44,6 +56,7 @@ function App() {
 
   const number = isNaN(num) ? null : parseFloat(num);
 
+  const jumpConfig = JUMP_CONFIG[jumpConfigKey];
   return (
     <div className="App">
       <Box flexDirection="row" display="flex" justifyContent="center">
@@ -60,6 +73,18 @@ function App() {
           <FormControlLabel value={UNIT.LB} control={<Radio />} label="LB" />
           <FormControlLabel value={UNIT.KG} control={<Radio />} label="KG" />
         </RadioGroup>
+
+        <IconButton
+          aria-label="close"
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+          }}
+          onClick={() => setIsSettingsOpen(true)}
+        >
+          <SettingsIcon />
+        </IconButton>
       </Box>
 
       <TableContainer component={Paper}>
@@ -73,7 +98,7 @@ function App() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {percentages.map((percent, i) => (
+            {jumpConfig.values.map((percent, i) => (
               <TableRow key={percent} className={styles.tableRow}>
                 <TableCell component="th" scope="row">
                   {`${percent * 100}%`}
@@ -94,6 +119,19 @@ function App() {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Dialog open={isSettingsOpen}>
+        <DialogContent>
+          <RadioGroup value={jumpConfigKey} onChange={handleChangeJumpConfig}>
+            {Object.entries(JUMP_CONFIG).map(([k, v]) => (
+              <FormControlLabel value={k} control={<Radio />} label={v.label} />
+            ))}
+          </RadioGroup>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose}>Done</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
