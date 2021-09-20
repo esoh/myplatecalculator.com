@@ -28,6 +28,7 @@ import {
 import {
   UNIT,
   JUMP_CONFIG,
+  LOCAL_STORAGE,
 } from './constants';
 
 const useStyles = makeStyles(theme => ({
@@ -41,8 +42,11 @@ const useStyles = makeStyles(theme => ({
 function App() {
   const [num, setNum] = useState('');
   const [unit, setUnit] = useState(UNIT.LB);
-  const [jumpConfigKey, setJumpConfigKey] = useState(JUMP_CONFIG.MATT_GARY.key);
-  const handleChangeJumpConfig = e => setJumpConfigKey(e.target.value);
+  const [jumpConfigKey, setJumpConfigKey] = useState(localStorage.getItem(LOCAL_STORAGE.CONFIG) || JUMP_CONFIG.MATT_GARY.key);
+  const handleChangeJumpConfig = e => {
+    setJumpConfigKey(e.target.value);
+    localStorage.setItem(LOCAL_STORAGE.CONFIG, e.target.value);
+  }
   const styles = useStyles();
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
