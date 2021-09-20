@@ -19,6 +19,7 @@ data "aws_route53_zone" "primary_zone" {
 locals {
   web_domain_name                  = data.aws_ssm_parameter.web_domain_name.value
   web_host_bucket_website_endpoint = data.aws_s3_bucket.web_bucket.website_endpoint
+  cf_ssm                           = "/${var.prefix}/${var.env}/web/CF_ID"
 
   s3_origin_id                     = "main"
   is_subdomain                     = length(regexall("[\\w]+\\.[\\w]+\\.[\\w]+", local.web_domain_name)) > 0

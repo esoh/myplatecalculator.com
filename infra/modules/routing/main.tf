@@ -197,3 +197,9 @@ resource "aws_route53_record" "no_www" {
     evaluate_target_health = true
   }
 }
+
+resource "aws_ssm_parameter" "cf_web_dist_id" {
+  name  = local.cf_ssm
+  type  = "SecureString"
+  value = aws_cloudfront_distribution.web_dist.id
+}

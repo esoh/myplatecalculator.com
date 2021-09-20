@@ -13,7 +13,7 @@ locals {
   account_id   = local.account_vars.locals.account_id
   profile      = local.account_vars.locals.profile
   region       = local.region_vars.locals.region
-  prefix       = "mattgarywarmups"
+  prefix       = "myplatecalculator"
 }
 
 // AWS

@@ -16,8 +16,8 @@ const opts = {
   region: argv.region || 'us-east-1',
   profile: argv['aws-profile'] || 'sean',
 };
-const SSM_WEB_HOST_BUCKET_PATH = `/mattgarywarmups/${opts.stage}/web/HOST_BUCKET`;
-const SSM_WEB_CF_ID = `/mattgarywarmups/${opts.stage}/web/CF_ID`;
+const SSM_WEB_HOST_BUCKET_PATH = `/myplatecalculator/${opts.stage}/web/HOST_BUCKET`;
+const SSM_WEB_CF_ID = `/myplatecalculator/${opts.stage}/web/CF_ID`;
 
 const credentials = new AWS.SharedIniFileCredentials({ profile: opts.profile });
 AWS.config.credentials = credentials;
