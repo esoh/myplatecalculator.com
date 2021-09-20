@@ -9,40 +9,88 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import Radio from '@material-ui/core/Radio';
+import Box from '@material-ui/core/Box';
+
+const UNIT = {
+  KG: "KG",
+  LB: "LB",
+};
+
+const PLATE_TYPES = {
+  [UNIT.KG]: [25, 20, 15, 10, 5, 2.5, 1.25],
+  [UNIT.LB]: [45, 35, 25, 10, 5, 2.5, 1.25],
+};
+
+const BAR_WEIGHT = {
+  [UNIT.KG]: 20,
+  [UNIT.LB]: 45,
+};
 
 const percentages = [0.475, 0.60, 0.725, 0.825, 0.9, 0.96, 1];
 const roundToNearest = (number, step) => Math.round(number/step) * step;
-const toPlates = number => {
-  const platesAvailable = [45, 35, 25, 10, 5, 2.5, 1.25];
-  if (number < 45) return 'less than bar';
+const toPlates = (number, unit) => {
+  const platesAvailable = unit === UNIT.KG ? PLATE_TYPES.KG : PLATE_TYPES.LB;
+  const barWeight = unit === UNIT.KG ? BAR_WEIGHT.KG : BAR_WEIGHT.LB;
+  if (number < barWeight) return 'less than bar';
 
   const platesStrings = [];
-  let left = (number - 45)/2;
+  let left = (number - barWeight)/2;
   for (let i = 0; i < platesAvailable.length && left !== 0; i += 1) {
     const candidatePlateWeight = platesAvailable[i];
     const numPlates = Math.floor(left / candidatePlateWeight);
-    if (numPlates) platesStrings.push(`${numPlates} x ${candidatePlateWeight}lbs`);
+    if (numPlates) platesStrings.push(`${numPlates} x ${candidatePlateWeight}${unit}`);
     left -= numPlates * candidatePlateWeight;
   }
 
   return platesStrings.join('\n');
 };
 
+const LBS_IN_KGS = 2.20462262;
+
+const rnd = val => Math.round((val + Number.EPSILON) * 100) / 100;
+const convertValue = (value, oldUnit, newUnit) => {
+  if (oldUnit === UNIT.KG) {
+    if (!isNaN(parseFloat(value))) return parseFloat(rnd(parseFloat(value) * LBS_IN_KGS).toFixed(2));
+    return value;
+  } else {
+    if (!isNaN(parseFloat(value))) return parseFloat(rnd(parseFloat(value) / LBS_IN_KGS).toFixed(2));
+    return value;
+  }
+};
+
 function App() {
-  const [num, setNum] = useState();
+  const [num, setNum] = useState('');
+  const [unit, setUnit] = useState(UNIT.LB);
+
+  const handleChangeUnit = e => setUnit(oldUnit => {
+    const newUnit = e.target.value;
+    setNum(prev => convertValue(prev, oldUnit, newUnit));
+    return newUnit;
+  });
 
   const number = isNaN(num) ? null : parseFloat(num);
 
   return (
     <div className="App">
-      <Input
-        placeholder="225"
-        autoFocus
-        onChange={e => setNum(e.target.value)}
-        onFocus={event => {
-          event.target.select();
-        }}
-      />
+      <Box flexDirection="row" display="flex" justifyContent="center">
+        <Input
+          placeholder="225"
+          autoFocus
+          value={num}
+          onChange={e => setNum(e.target.value)}
+          onFocus={event => {
+            event.target.select();
+          }}
+        />
+        <RadioGroup row value={unit} onChange={handleChangeUnit}>
+          <FormControlLabel value={UNIT.LB} control={<Radio />} label="LB" />
+          <FormControlLabel value={UNIT.KG} control={<Radio />} label="KG" />
+        </RadioGroup>
+      </Box>
+
       <TableContainer component={Paper}>
         <Table aria-label="simple table">
           <TableHead>
@@ -67,7 +115,7 @@ function App() {
                 </TableCell>
                 <TableCell align="right">
                   <Typography style={{whiteSpace: 'pre-line'}}>
-                    {isNaN(number) ? '' : toPlates(roundToNearest(percent * number, 2.5))}
+                    {isNaN(number) ? '' : toPlates(roundToNearest(percent * number, 2.5), unit)}
                   </Typography>
                 </TableCell>
               </TableRow>
