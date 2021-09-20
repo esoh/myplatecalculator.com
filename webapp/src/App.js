@@ -14,53 +14,14 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import Radio from '@material-ui/core/Radio';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
-
-const UNIT = {
-  KG: "KG",
-  LB: "LB",
-};
-
-const PLATE_TYPES = {
-  [UNIT.KG]: [25, 20, 15, 10, 5, 2.5, 1.25],
-  [UNIT.LB]: [45, 35, 25, 10, 5, 2.5, 1.25],
-};
-
-const BAR_WEIGHT = {
-  [UNIT.KG]: 20,
-  [UNIT.LB]: 45,
-};
+import {
+  roundToNearest,
+  toPlates,
+  convertValue,
+} from './utils';
+import { UNIT } from './constants';
 
 const percentages = [0.475, 0.60, 0.725, 0.825, 0.9, 0.96, 1];
-const roundToNearest = (number, step) => Math.round(number/step) * step;
-const toPlates = (number, unit) => {
-  const platesAvailable = unit === UNIT.KG ? PLATE_TYPES.KG : PLATE_TYPES.LB;
-  const barWeight = unit === UNIT.KG ? BAR_WEIGHT.KG : BAR_WEIGHT.LB;
-  if (number < barWeight) return 'less than bar';
-
-  const platesStrings = [];
-  let left = (number - barWeight)/2;
-  for (let i = 0; i < platesAvailable.length && left !== 0; i += 1) {
-    const candidatePlateWeight = platesAvailable[i];
-    const numPlates = Math.floor(left / candidatePlateWeight);
-    if (numPlates) platesStrings.push(`${numPlates} x ${candidatePlateWeight}${unit}`);
-    left -= numPlates * candidatePlateWeight;
-  }
-
-  return platesStrings.join('\n');
-};
-
-const LBS_IN_KGS = 2.20462262;
-
-const rnd = val => Math.round((val + Number.EPSILON) * 100) / 100;
-const convertValue = (value, oldUnit, newUnit) => {
-  if (oldUnit === UNIT.KG) {
-    if (!isNaN(parseFloat(value))) return parseFloat(rnd(parseFloat(value) * LBS_IN_KGS).toFixed(2));
-    return value;
-  } else {
-    if (!isNaN(parseFloat(value))) return parseFloat(rnd(parseFloat(value) / LBS_IN_KGS).toFixed(2));
-    return value;
-  }
-};
 
 const useStyles = makeStyles(theme => ({
   tableRow: {
