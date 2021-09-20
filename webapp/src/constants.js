@@ -23,11 +23,19 @@ export const JUMP_CONFIG = {
   },
   MATT_GARY: {
     key: "MATT_GARY",
-    label: 'Matt Gary',
+    label: 'Matt Gary Warmup %s',
     values: [0.475, 0.60, 0.725, 0.825, 0.9, 0.96, 1],
   },
 }
 
 export const LOCAL_STORAGE = {
   CONFIG: "CONFIG",
+  SMALLEST_LB_PLATE: "SMALLEST_LB_PLATE",
+  SMALLEST_KG_PLATE: "SMALLEST_KG_PLATE",
+  UNIT: "UNIT",
 };
+
+export const SMALLEST_PLATE_OPTS = [1.25, 2.5, 5];
+
+export const DEFAULT_SMALLEST_LB_PLATE = 2.5;
+export const DEFAULT_SMALLEST_KG_PLATE = 1.25;

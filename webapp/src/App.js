@@ -19,6 +19,8 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
+import FormLabel from '@mui/material/FormLabel';
+import FormControl from '@mui/material/FormControl';
 import { ThemeProvider, createMuiTheme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import {
@@ -30,6 +32,9 @@ import {
   UNIT,
   JUMP_CONFIG,
   LOCAL_STORAGE,
+  SMALLEST_PLATE_OPTS,
+  DEFAULT_SMALLEST_LB_PLATE,
+  DEFAULT_SMALLEST_KG_PLATE,
 } from './constants';
 
 const useStyles = makeStyles(theme => ({
@@ -53,7 +58,7 @@ const useStyles = makeStyles(theme => ({
 
 function Main() {
   const [num, setNum] = useState('');
-  const [unit, setUnit] = useState(UNIT.LB);
+  const [unit, setUnit] = useState(localStorage.getItem(LOCAL_STORAGE.UNIT) || UNIT.LB);
   const [jumpConfigKey, setJumpConfigKey] = useState(localStorage.getItem(LOCAL_STORAGE.CONFIG) || JUMP_CONFIG.DEFAULT.key);
   const handleChangeJumpConfig = e => {
     setJumpConfigKey(e.target.value);
@@ -64,13 +69,39 @@ function Main() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const onClose = () => setIsSettingsOpen(false);
 
-  const handleChangeUnit = e => setUnit(oldUnit => {
-    const newUnit = e.target.value;
-    setNum(prev => convertValue(prev, oldUnit, newUnit));
-    return newUnit;
-  });
+  const handleChangeUnit = e => {
+    setUnit(oldUnit => {
+      const newUnit = e.target.value;
+      setNum(prev => convertValue(prev, oldUnit, newUnit));
+      return newUnit;
+    });
+    localStorage.setItem(LOCAL_STORAGE.UNIT, e.target.value);
+  }
 
   const number = isNaN(num) ? null : parseFloat(num);
+
+  const [smallestLbPlate, setSmallestLbPlate] = useState(() => {
+    const localVal = localStorage.getItem(LOCAL_STORAGE.SMALLEST_LB_PLATE);
+    if (localVal == null) return DEFAULT_SMALLEST_LB_PLATE;
+    return isNaN(parseFloat(localVal)) ? DEFAULT_SMALLEST_LB_PLATE : parseFloat(localVal);
+  });
+  const handleChangeSmallestLbPlate = e => {
+    const val = parseFloat(e.target.value);
+    setSmallestLbPlate(val);
+    localStorage.setItem(LOCAL_STORAGE.SMALLEST_LB_PLATE, val);
+  }
+  const [smallestKgPlate, setSmallestKgPlate] = useState(() => {
+    const localVal = localStorage.getItem(LOCAL_STORAGE.SMALLEST_KG_PLATE);
+    if (localVal == null) return DEFAULT_SMALLEST_KG_PLATE;
+    return isNaN(parseFloat(localVal)) ? DEFAULT_SMALLEST_KG_PLATE : parseFloat(localVal);
+  });
+  const handleChangeSmallestKgPlate = e => {
+    const val = parseFloat(e.target.value);
+    setSmallestKgPlate(val);
+    localStorage.setItem(LOCAL_STORAGE.SMALLEST_KG_PLATE, val);
+  }
+
+  const minPlate = unit === UNIT.KG ? smallestKgPlate : smallestLbPlate;
 
   const jumpConfig = JUMP_CONFIG[jumpConfigKey];
   return (
@@ -121,11 +152,11 @@ function Main() {
                   {isNaN(number) ? '' : parseFloat((percent * number).toFixed(2)).toString()}
                 </TableCell>
                 <TableCell align="right">
-                  {isNaN(number) ? '' : roundToNearest(percent * number, 2.5).toString()}
+                  {isNaN(number) ? '' : roundToNearest(percent * number, minPlate * 2).toString()}
                 </TableCell>
                 <TableCell align="right">
                   <Typography style={{whiteSpace: 'pre-line'}}>
-                    {isNaN(number) ? '' : toPlates(roundToNearest(percent * number, 2.5), unit)}
+                    {isNaN(number) ? '' : toPlates(roundToNearest(percent * number, minPlate * 2), unit)}
                   </Typography>
                 </TableCell>
               </TableRow>
@@ -136,11 +167,33 @@ function Main() {
 
       <Dialog open={isSettingsOpen}>
         <DialogContent>
-          <RadioGroup value={jumpConfigKey} onChange={handleChangeJumpConfig}>
-            {Object.entries(JUMP_CONFIG).map(([k, v]) => (
-              <FormControlLabel value={k} control={<Radio />} label={v.label} />
-            ))}
-          </RadioGroup>
+          <FormControl component="fieldset" margin="normal">
+            <FormLabel component="legend">Percentages</FormLabel>
+            <RadioGroup value={jumpConfigKey} onChange={handleChangeJumpConfig}>
+              {Object.entries(JUMP_CONFIG).map(([k, v]) => (
+                <FormControlLabel value={k} control={<Radio />} label={v.label} />
+              ))}
+            </RadioGroup>
+          </FormControl>
+
+          <FormControl component="fieldset" margin="normal">
+            <FormLabel component="legend">Smallest LB plate</FormLabel>
+            <RadioGroup value={smallestLbPlate} onChange={handleChangeSmallestLbPlate}>
+              {SMALLEST_PLATE_OPTS.map(v => (
+                <FormControlLabel value={v} control={<Radio />} label={`${v} LB`} />
+              ))}
+            </RadioGroup>
+          </FormControl>
+
+          <FormControl component="fieldset" margin="normal">
+            <FormLabel component="legend">Smallest KG plate</FormLabel>
+            <RadioGroup value={smallestKgPlate} onChange={handleChangeSmallestKgPlate}>
+              {SMALLEST_PLATE_OPTS.map(v => (
+                <FormControlLabel value={v} control={<Radio />} label={`${v} KG`} />
+              ))}
+            </RadioGroup>
+          </FormControl>
+
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>Done</Button>
