@@ -167,7 +167,7 @@ function Main() {
 
       <Dialog open={isSettingsOpen}>
         <DialogContent>
-          <FormControl component="fieldset" margin="normal">
+          <FormControl component="fieldset" margin="normal" fullWidth>
             <FormLabel component="legend">Percentages</FormLabel>
             <RadioGroup value={jumpConfigKey} onChange={handleChangeJumpConfig}>
               {Object.entries(JUMP_CONFIG).map(([k, v]) => (
@@ -176,7 +176,7 @@ function Main() {
             </RadioGroup>
           </FormControl>
 
-          <FormControl component="fieldset" margin="normal">
+          <FormControl component="fieldset" margin="normal" fullWidth>
             <FormLabel component="legend">Smallest LB plate</FormLabel>
             <RadioGroup value={smallestLbPlate} onChange={handleChangeSmallestLbPlate}>
               {SMALLEST_PLATE_OPTS.map(v => (
@@ -185,7 +185,7 @@ function Main() {
             </RadioGroup>
           </FormControl>
 
-          <FormControl component="fieldset" margin="normal">
+          <FormControl component="fieldset" margin="normal" fullWidth>
             <FormLabel component="legend">Smallest KG plate</FormLabel>
             <RadioGroup value={smallestKgPlate} onChange={handleChangeSmallestKgPlate}>
               {SMALLEST_PLATE_OPTS.map(v => (
