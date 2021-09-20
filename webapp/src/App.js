@@ -13,6 +13,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Radio from '@material-ui/core/Radio';
 import Box from '@material-ui/core/Box';
+import { makeStyles } from '@material-ui/core/styles';
 
 const UNIT = {
   KG: "KG",
@@ -61,9 +62,18 @@ const convertValue = (value, oldUnit, newUnit) => {
   }
 };
 
+const useStyles = makeStyles(theme => ({
+  tableRow: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+}));
+
 function App() {
   const [num, setNum] = useState('');
   const [unit, setUnit] = useState(UNIT.LB);
+  const styles = useStyles();
 
   const handleChangeUnit = e => setUnit(oldUnit => {
     const newUnit = e.target.value;
@@ -102,8 +112,8 @@ function App() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {percentages.map(percent => (
-              <TableRow key={percent}>
+            {percentages.map((percent, i) => (
+              <TableRow key={percent} className={styles.tableRow}>
                 <TableCell component="th" scope="row">
                   {`${percent * 100}%`}
                 </TableCell>
