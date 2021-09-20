@@ -54,7 +54,7 @@ const useStyles = makeStyles(theme => ({
 function Main() {
   const [num, setNum] = useState('');
   const [unit, setUnit] = useState(UNIT.LB);
-  const [jumpConfigKey, setJumpConfigKey] = useState(localStorage.getItem(LOCAL_STORAGE.CONFIG) || JUMP_CONFIG.MATT_GARY.key);
+  const [jumpConfigKey, setJumpConfigKey] = useState(localStorage.getItem(LOCAL_STORAGE.CONFIG) || JUMP_CONFIG.DEFAULT.key);
   const handleChangeJumpConfig = e => {
     setJumpConfigKey(e.target.value);
     localStorage.setItem(LOCAL_STORAGE.CONFIG, e.target.value);
