@@ -10,11 +10,14 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import Chip from '@mui/material/Chip';
 import RadioGroup from '@mui/material/RadioGroup';
 import Radio from '@mui/material/Radio';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -46,13 +49,12 @@ const useStyles = makeStyles(theme => ({
   table: {
     marginBottom: theme.spacing(4),
   },
-  settingsIcon: {
-    position: 'absolute',
-    right: 8,
-  },
   input: {
     marginRight: theme.spacing(2),
     maxWidth: 100,
+  },
+  unitChip: {
+    width: 40,
   },
 }));
 
@@ -69,13 +71,19 @@ function Main() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const onClose = () => setIsSettingsOpen(false);
 
-  const handleChangeUnit = e => {
+  const onChangeUnit = newUnit => {
+    setUnit(newUnit);
+    localStorage.setItem(LOCAL_STORAGE.UNIT, newUnit);
+  }
+
+  const onSwitchUnit = () => {
+    const newUnit = unit === UNIT.KG ? UNIT.LB : UNIT.KG;
+
     setUnit(oldUnit => {
-      const newUnit = e.target.value;
       setNum(prev => convertValue(prev, oldUnit, newUnit));
       return newUnit;
     });
-    localStorage.setItem(LOCAL_STORAGE.UNIT, e.target.value);
+    localStorage.setItem(LOCAL_STORAGE.UNIT, newUnit);
   }
 
   const number = isNaN(num) ? null : parseFloat(num);
@@ -106,7 +114,12 @@ function Main() {
   const jumpConfig = JUMP_CONFIG[jumpConfigKey];
   return (
     <div className="App">
-      <Box flexDirection="row" display="flex" justifyContent="center">
+      <Box
+        flexDirection="row"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+      >
         <Input
           placeholder="225"
           autoFocus
@@ -118,18 +131,41 @@ function Main() {
           }}
           className={classes.input}
         />
-        <RadioGroup row value={unit} onChange={handleChangeUnit}>
-          <FormControlLabel value={UNIT.LB} control={<Radio />} label="LB" />
-          <FormControlLabel value={UNIT.KG} control={<Radio />} label="KG" />
-        </RadioGroup>
+
+        <Chip
+          label="LB"
+          size="small"
+          onClick={() => onChangeUnit(UNIT.LB)}
+          color='primary'
+          className={classes.unitChip}
+          variant={unit !== UNIT.LB ? 'outlined' : 'filled'}
+        />
 
         <IconButton
-          aria-label="close"
-          className={classes.settingsIcon}
-          onClick={() => setIsSettingsOpen(true)}
+          aria-label="convert"
+          onClick={onSwitchUnit}
+          disabled={isNaN(parseFloat(num))}
         >
-          <SettingsIcon />
+          {unit === UNIT.LB ? <ArrowCircleRightIcon /> : <ArrowCircleLeftIcon />}
         </IconButton>
+
+        <Chip
+          label="KG"
+          size="small"
+          onClick={() => onChangeUnit(UNIT.KG)}
+          color='primary'
+          className={classes.unitChip}
+          variant={unit !== UNIT.KG ? 'outlined' : 'filled'}
+        />
+
+        <div style={{ position: 'absolute', right: 0 }}>
+          <IconButton
+            aria-label="settings"
+            onClick={() => setIsSettingsOpen(true)}
+          >
+            <SettingsIcon />
+          </IconButton>
+        </div>
       </Box>
 
       <TableContainer component={Paper} className={classes.table}>
