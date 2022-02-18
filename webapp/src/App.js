@@ -143,24 +143,27 @@ function Main() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {jumpConfig.values.map((percent, i) => (
-              <TableRow key={percent} className={classes.tableRow}>
-                <TableCell component="th" scope="row">
-                  {`${percent * 100}%`}
-                </TableCell>
-                <TableCell align="right">
-                  {isNaN(number) ? '' : parseFloat((percent * number).toFixed(2)).toString()}
-                </TableCell>
-                <TableCell align="right">
-                  {isNaN(number) ? '' : roundToNearest(percent * number, minPlate * 2).toString()}
-                </TableCell>
-                <TableCell align="right">
-                  <Typography style={{whiteSpace: 'pre-line'}}>
-                    {isNaN(number) ? '' : toPlates(roundToNearest(percent * number, minPlate * 2), unit)}
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            ))}
+            {[1, ...jumpConfig.values].map((percent, i) => {
+              const boldStyle = percent === 1 ? { fontWeight: 'bold' } : undefined;
+              return (
+                <TableRow key={percent} className={classes.tableRow}>
+                  <TableCell component="th" scope="row" style={boldStyle}>
+                    {`${percent * 100}%`}
+                  </TableCell>
+                  <TableCell align="right" style={boldStyle}>
+                    {isNaN(number) ? '' : parseFloat((percent * number).toFixed(2)).toString()}
+                  </TableCell>
+                  <TableCell align="right" style={boldStyle}>
+                    {isNaN(number) ? '' : roundToNearest(percent * number, minPlate * 2).toString()}
+                  </TableCell>
+                  <TableCell align="right">
+                    <Typography style={{whiteSpace: 'pre-line', ...boldStyle}}>
+                      {isNaN(number) ? '' : toPlates(roundToNearest(percent * number, minPlate * 2), unit)}
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              )
+            })}
           </TableBody>
         </Table>
       </TableContainer>
