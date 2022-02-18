@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
     },
   },
   table: {
-    marginBottom: theme.spacing(4),
+    overflowY: 'scroll',
   },
   input: {
     marginRight: theme.spacing(2),
