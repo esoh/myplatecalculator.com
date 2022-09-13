@@ -9,6 +9,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Input from '@mui/material/Input';
 import Typography from '@mui/material/Typography';
 
 const percentTableRows = [
@@ -74,12 +75,12 @@ export default function RpeCalculator({onClickMenu}) {
         <Typography fontSize={12} fontWeight="bold" alignSelf="center">RPE</Typography>
         <Box ref={containerRef} flex={1}>
           <TableContainer component={Paper} sx={{height: dimensions.height, width: dimensions.width, minWidth: 200, minHeight: 200}}>
-            <Table size="small" aria-label="a dense table" stickyHeader>
+            <Table size="small" aria-label="a dense table" stickyHeader padding="none">
               <TableHead>
                 <TableRow>
                   <TableCell sx={{position: 'sticky', left: 0, backgroundColor: 'white'}}/>
                   {percentTableRows[0].map((_row, index) => (
-                    <TableCell key={index} align="center" sx={{fontWeight: 'bold'}}>{index + 1}</TableCell>
+                    <TableCell key={index} align="center" sx={{fontWeight: 'bold', zIndex: 2}}>{index + 1}</TableCell>
                   ))}
                 </TableRow>
               </TableHead>
@@ -89,11 +90,25 @@ export default function RpeCalculator({onClickMenu}) {
                     key={index}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
-                    <TableCell component="th" scope="row" sx={{position: 'sticky', left: 0, backgroundColor: 'white', fontWeight: 'bold'}}>
+                    <TableCell component="th" scope="row" sx={{position: 'sticky', left: 0, backgroundColor: 'white', fontWeight: 'bold', zIndex: 1}}>
                       {10 - (index * 0.5)}
                     </TableCell>
                     {row.map((percent, ci) => (
-                      <TableCell key={ci}>{percent === null ? '-' : percent.toString() + '%'}</TableCell>
+                      <TableCell key={ci}>
+                        <Box display="flex" justifyContent="center" marginLeft={0.5} marginRight={0.5}>
+                          {percent === null ? '-' : (
+                            <Input
+                              size="small"
+                              placeholder={percent.toString() + '%'}
+                              type="number"
+                              inputProps={{style: {padding: 0, fontSize: 10, minWidth: 34, textAlign: 'center'}}}
+                              onFocus={event => {
+                                event.target.select();
+                              }}
+                            />
+                          )}
+                        </Box>
+                      </TableCell>
                     ))}
                   </TableRow>
                 ))}
