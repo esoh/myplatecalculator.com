@@ -18,6 +18,7 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+import MenuIcon from '@mui/icons-material/Menu';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -57,7 +58,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function PlateCalculator() {
+export default function PlateCalculator({
+  onClickMenu,
+}) {
   const [num, setNum] = useState('');
   const [unit, setUnit] = useState(localStorage.getItem(LOCAL_STORAGE.UNIT) || UNIT.LB);
   const [jumpConfigKey, setJumpConfigKey] = useState(localStorage.getItem(LOCAL_STORAGE.CONFIG) || JUMP_CONFIG.DEFAULT.key);
@@ -165,6 +168,15 @@ export default function PlateCalculator() {
             <SettingsIcon />
           </IconButton>
         </div>
+
+        <div style={{ position: 'absolute', left: 0 }}>
+          <IconButton
+            aria-label="menu"
+            onClick={onClickMenu}
+          >
+            <MenuIcon/>
+          </IconButton>
+        </div>
       </Box>
 
       <TableContainer component={Paper} className={classes.table}>
@@ -181,7 +193,7 @@ export default function PlateCalculator() {
             {[1, ...jumpConfig.values].map((percent, i) => {
               const boldStyle = percent === 1 ? { fontWeight: 'bold' } : undefined;
               return (
-                <TableRow key={percent} className={classes.tableRow}>
+                <TableRow className={classes.tableRow} key={percent}>
                   <TableCell component="th" scope="row" style={boldStyle}>
                     {`${percent * 100}%`}
                   </TableCell>
@@ -209,7 +221,7 @@ export default function PlateCalculator() {
             <FormLabel component="legend">Percentages</FormLabel>
             <RadioGroup value={jumpConfigKey} onChange={handleChangeJumpConfig}>
               {Object.entries(JUMP_CONFIG).map(([k, v]) => (
-                <FormControlLabel value={k} control={<Radio />} label={v.label} />
+                <FormControlLabel key={k} value={k} control={<Radio />} label={v.label} />
               ))}
             </RadioGroup>
           </FormControl>
@@ -218,7 +230,7 @@ export default function PlateCalculator() {
             <FormLabel component="legend">Smallest LB plate</FormLabel>
             <RadioGroup value={smallestLbPlate} onChange={handleChangeSmallestLbPlate}>
               {SMALLEST_PLATE_OPTS.map(v => (
-                <FormControlLabel value={v} control={<Radio />} label={`${v} LB`} />
+                <FormControlLabel key={v} value={v} control={<Radio />} label={`${v} LB`} />
               ))}
             </RadioGroup>
           </FormControl>
@@ -227,7 +239,7 @@ export default function PlateCalculator() {
             <FormLabel component="legend">Smallest KG plate</FormLabel>
             <RadioGroup value={smallestKgPlate} onChange={handleChangeSmallestKgPlate}>
               {SMALLEST_PLATE_OPTS.map(v => (
-                <FormControlLabel value={v} control={<Radio />} label={`${v} KG`} />
+                <FormControlLabel key={v} value={v} control={<Radio />} label={`${v} KG`} />
               ))}
             </RadioGroup>
           </FormControl>
