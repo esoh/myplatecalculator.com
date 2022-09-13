@@ -121,6 +121,7 @@ export default function PlateCalculator({
         display="flex"
         justifyContent="center"
         alignItems="center"
+        style={{height: 40}}
       >
         <Input
           placeholder="225"

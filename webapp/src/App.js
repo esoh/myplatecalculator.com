@@ -40,7 +40,7 @@ const App = () => {
           </Drawer>
           <Routes>
             <Route path="/" element={<PlateCalculator onClickMenu={() => setIsDrawerOpen(true)} />}/>
-            <Route path="/rpe" element={<RpeCalculator />}/>
+            <Route path="/rpe" element={<RpeCalculator onClickMenu={() => setIsDrawerOpen(true)} />}/>
           </Routes>
       </div>
     </ThemeProvider>
