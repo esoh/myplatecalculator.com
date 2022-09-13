@@ -39,6 +39,40 @@ const percentTableRows = [
 export default function RpeCalculator({onClickMenu}) {
   const containerRef = React.useRef(null);
   const [dimensions, setDimensions] = React.useState({height: 0, width: 0});
+  const [tableValues, setTableValues] = React.useState(() => {
+    const rows = new Array(percentTableRows.length);
+    for (let i = 0; i < rows.length; i++) {
+      rows[i] = new Array(percentTableRows[0].length);
+    }
+    return rows;
+  });
+  const handleChangeTableValue = (v, r, c) => {
+    if (v.trim() === '' || isNaN(v)) {
+      const rows = new Array(percentTableRows.length);
+      for (let i = 0; i < rows.length; i++) {
+        rows[i] = new Array(percentTableRows[0].length);
+      }
+      rows[r][c] = v;
+      setTableValues(rows);
+    } else {
+      const value = parseFloat(v);
+      const currentPercent = percentTableRows[r][c];
+      const fullValue = value / (currentPercent / 100);
+
+      const rows = new Array(percentTableRows.length);
+      for (let i = 0; i < rows.length; i++) {
+        rows[i] = percentTableRows[i].map(percentVal => {
+          if (percentVal === null) {
+            return undefined;
+          }
+          const finalVal = (percentVal / 100) * fullValue;
+          return Math.round((finalVal + Number.EPSILON) * 100) / 100
+        });
+      }
+      rows[r][c] = v;
+      setTableValues(rows);
+    }
+  };
 
   React.useEffect(() => {
     function handleResize() {
@@ -105,6 +139,8 @@ export default function RpeCalculator({onClickMenu}) {
                               onFocus={event => {
                                 event.target.select();
                               }}
+                              onChange={e => handleChangeTableValue(e.target.value, index, ci)}
+                              value={tableValues[index][ci] ?? ''}
                             />
                           )}
                         </Box>
