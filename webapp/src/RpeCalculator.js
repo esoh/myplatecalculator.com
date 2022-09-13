@@ -129,13 +129,13 @@ export default function RpeCalculator({onClickMenu}) {
                     </TableCell>
                     {row.map((percent, ci) => (
                       <TableCell key={ci}>
-                        <Box display="flex" justifyContent="center" marginLeft={0.5} marginRight={0.5}>
+                        <Box display="flex" justifyContent="center" marginLeft={0.5} marginRight={0.5} minHeight={40}>
                           {percent === null ? '-' : (
                             <Input
                               size="small"
                               placeholder={percent.toString() + '%'}
                               type="number"
-                              inputProps={{style: {padding: 0, fontSize: 10, minWidth: 34, textAlign: 'center'}}}
+                              inputProps={{style: {fontSize: 16, minWidth: 50, textAlign: 'center'}}}
                               onFocus={event => {
                                 event.target.select();
                               }}
